@@ -1,0 +1,9 @@
+title exercise6
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server->browser: 201 response
+
+note over browser: 
+browser immediatly renders the new note 
+without re-rendering everything
+end note
