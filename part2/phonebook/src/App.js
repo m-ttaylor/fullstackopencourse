@@ -4,9 +4,6 @@ import Form from './components/Form'
 import Search from './components/Search'
 import phonebookService from './services/phonebook'
 
-// const ErrorMessage = ({ message }) => {
-//   const notificationStyle
-// }
 const Notification = ({ message, errorState }) => {
   const notificationStyle = {
     color: errorState ? 'red' : 'green',
@@ -70,11 +67,10 @@ const App = () => {
         `${newName} already present in phonebook, prompting user for more instructions`
       )
       if (window.confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)) {
-        const updatedPerson = {...oldPerson, number: newNumber}
         phonebookService
-          .updateEntry(updatedPerson.id, updatedPerson)
+          .updateEntry(oldPerson.id, personObj)
           .then(returnedPerson => {
-            setPersons(persons.map(person => person.id !== updatedPerson.id ? person : updatedPerson))
+            setPersons(persons.map(person => person.id !== returnedPerson.id ? person : returnedPerson))
             setNotification(
               `Updated ${newName}'s number`
             )
@@ -119,7 +115,6 @@ const App = () => {
   }
 
   const handleDelete = (id, name) => () => {
-      
     console.log(`deleting id: ${id}, name: ${name}`)
     if (window.confirm(`Really delete ${name}?`)) {
       phonebookService
