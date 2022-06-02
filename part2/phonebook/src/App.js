@@ -42,11 +42,9 @@ const App = () => {
       })
   }, [])
 
-  const notifyOfError = (newName) => {
+  const notifyOfError = (errorMessage) => {
     setErrorState(true)
-    setNotification(
-      `The information of ${newName} has already been removed from the server`
-    )
+    setNotification(errorMessage)
     setTimeout(() => {
       setNotification(null)
       setErrorState(false)
@@ -79,11 +77,11 @@ const App = () => {
             }, 5000)
           })
           .catch(error => {
-            notifyOfError(newName)
+            notifyOfError(`The information of ${newName} has already been removed from the server`)
           })
       }
     } else {
-      console.log('adding person', newName)
+      console.log(`adding person '${newName}'`)
 
       phonebookService
         .create(personObj)
@@ -97,6 +95,10 @@ const App = () => {
           setTimeout(() => {
             setNotification(null)
           }, 5000)
+        })
+        .catch(({response}) => {
+          notifyOfError(response.data.error)
+          console.log(response.data.error)
         })
     }
 
@@ -123,7 +125,7 @@ const App = () => {
           setPersons(persons.filter(n => n.id !== id))
         })
         .catch(error => {
-          notifyOfError(name)
+          notifyOfError(`The information of ${name} has already been removed from the server`)
           setPersons(persons.filter(n => n.id !== id ))
         })
     }
