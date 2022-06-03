@@ -11,7 +11,7 @@ const LoginForm = ({
       <input
         type="text"
         value={username}
-        nane="Username"
+        name="Username"
         onChange={({ target }) => setUsername(target.value)}
       />
     </div>
