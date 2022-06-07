@@ -91,8 +91,21 @@ const App = () => {
       id, 
       newBlog
     )
-    
+
     setBlogs(blogs.map(b => b.id !== id ? b : response ))
+  }
+
+  const removeBlog = async ({ id }) => {
+    const blog = blogs.find(b => b.id === id)
+    if (window.confirm(`Really delete ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.remove(id)
+        setBlogs(blogs.filter(b => b.id !== id))
+      } catch(error) {
+        notify('Error removing blog post from server', true)
+      }
+      
+    }    
   }
 
   const renderLogin = () => {
@@ -142,7 +155,7 @@ const App = () => {
       {blogForm()}
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} addLike={addLike}/>
+        <Blog key={blog.id} blog={blog} addLike={addLike} removeBlog={removeBlog} userid={user.id}/>
       )}
     </div>
     }
