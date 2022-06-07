@@ -65,7 +65,7 @@ const App = () => {
         setNotes(notes.concat(returnedNote))
       })
   }
-  
+
   const loginForm = () => {
     return (
       <Togglable buttonLabel='login'>
