@@ -94,6 +94,9 @@ const App = () => {
       newBlog
     )
 
+    const userid = response.user
+    response.user = { id: userid, name: blog.user.name, username: blog.user.username }
+
     setBlogs(blogs.map(b => b.id !== id ? b : response ))
   }
 
@@ -118,6 +121,7 @@ const App = () => {
           <div>
           username
             <input
+              id="username"
               type="text"
               value={username}
               name="Username"
@@ -127,13 +131,14 @@ const App = () => {
           <div>
           password
             <input
+              id="password"
               type="password"
               value={password}
               name="Passowrd"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type="submit">login</button>
+          <button id="login-button" type="submit">login</button>
         </form>
       </>
     )
@@ -156,14 +161,17 @@ const App = () => {
           <h2>blogs</h2>
           {blogForm()}
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-          {blogs.map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-              addLike={addLike}
-              removeBlog={removeBlog}
-              username={user.username}/>
-          )}
+          {[...blogs]
+            .sort((a, b) => a.likes < b.likes ? 1 : -1)
+            .map(blog =>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                addLike={addLike}
+                removeBlog={removeBlog}
+                username={user.username}/>
+            )
+          }
         </div>
       }
     </div>
