@@ -2,17 +2,30 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { legacy_createStore as createStore } from 'redux'
+import { legacy_createStore as createStore, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import noteReducer from './reducers/noteReducer'
+import { configureStore } from '@reduxjs/toolkit'
+
+import noteReducer, {createNote, toggleImportanceOf } from './reducers/noteReducer'
+import filterReducer from './reducers/filterReducer'
+import { filterChange } from './reducers/filterReducer'
+
 import reportWebVitals from './reportWebVitals';
 
-const store = createStore(noteReducer)
+const store = configureStore({
+  reducer: {
+    notes: noteReducer,
+    filter: filterReducer
+  }
+})
 
+console.log(store.getState())
+
+store.subscribe(() => console.log(store.getState()))
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <App />
-  </Provider>, document.getElementById('root')
+  </Provider>
 );
 
 
