@@ -2,7 +2,7 @@
   "anecdotes": [
     {
       "content": "Adding manpower to a late software project makes it later!",
-      "votes": 4,
+      "votes": 6,
       "id": "21149"
     },
     {
@@ -29,6 +29,21 @@
       "content": "Test anecdote",
       "votes": 3,
       "id": "NEw_ppA"
+    },
+    {
+      "content": "new anecdote",
+      "votes": 0,
+      "id": "vBQRyYm"
+    },
+    {
+      "content": "another new anecdote",
+      "votes": 0,
+      "id": "cCQ0vv1"
+    },
+    {
+      "content": "one more",
+      "votes": 2,
+      "id": "gEzgZFC"
     }
   ]
 }
