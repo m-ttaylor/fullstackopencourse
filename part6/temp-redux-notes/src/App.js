@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import NewNote from './components/NewNote'
-import Notes from './components/Notes'
+import ConnectedNewNote from './components/NewNote'
+import ConnectedNotes from './components/Notes'
 import VisibilityFilter from './components/VisibilityFilter'
 import { initializeNotes } from './reducers/noteReducer'
 import { useDispatch } from 'react-redux'
@@ -14,9 +14,9 @@ const App = () => {
 
   return (
     <div>
-      <NewNote />
+      <ConnectedNewNote />
       <VisibilityFilter />
-      <Notes />
+      <ConnectedNotes />
     </div>
   )
 }
