@@ -2,7 +2,7 @@
   "anecdotes": [
     {
       "content": "Adding manpower to a late software project makes it later!",
-      "votes": 6,
+      "votes": 30,
       "id": "21149"
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "content": "Test anecdote",
-      "votes": 3,
+      "votes": 17,
       "id": "NEw_ppA"
     },
     {
@@ -44,6 +44,11 @@
       "content": "one more",
       "votes": 2,
       "id": "gEzgZFC"
+    },
+    {
+      "content": "Testing with redux connect",
+      "votes": 0,
+      "id": "7DE7twE"
     }
   ]
 }
