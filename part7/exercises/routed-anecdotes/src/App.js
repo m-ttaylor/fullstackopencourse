@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useField } from './hooks'
+
 import {
   Routes,
   Route,
@@ -68,24 +70,30 @@ const Footer = () => (
 const CreateNew = (props) => {
   const navigate = useNavigate()
 
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
+  const {reset: contentReset, ...content} = useField('text')
+  const {reset: authorReset, ...author} = useField('text')
+  const {reset: infoReset, ...info} = useField('text')
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
-      votes: 0
-    })
-    navigate('/anecdotes')
-    props.setNotification(`anecdote ${content} created!`)
-    setTimeout(() => {
-      props.setNotification('')
-    }, 5000)
+    if (e.nativeEvent.submitter.id === 'create') {
+      props.addNew({
+        content: content.value,
+        author: author.value,
+        info: info.value,
+        votes: 0
+      })
+      navigate('/anecdotes')
+      props.setNotification(`anecdote ${content.value} created!`)
+      setTimeout(() => {
+        props.setNotification('')
+      }, 5000)
+    } else if (e.nativeEvent.submitter.id === 'reset') {
+      contentReset()
+      authorReset()
+      infoReset()
+    }
+    
   }
 
   return (
@@ -94,17 +102,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...content} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input {...info} />
         </div>
-        <button>create</button>
+        <button id='create'>create</button>
+        <button id='reset'>reset</button>
       </form>
     </div>
   )
@@ -119,6 +128,7 @@ const Notification = ({message}) => {
 }
 
 const App = () => {
+  // const username = useField('text')
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
