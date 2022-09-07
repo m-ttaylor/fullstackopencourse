@@ -1,13 +1,20 @@
 import { useState } from 'react'
 import { PropTypes } from 'prop-types'
+import CommentForm from './CommentForm'
+import { useSelector } from 'react-redux'
 
 const Blog = ({ blog, addLike, removeBlog, username }) => {
-  const [visible, setVisible] = useState(false)
+  const foundBlog = useSelector(({ blogs }) => {
+    return [...blogs].filter((b) => b.id === blog.id)
+  })
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
-  const showDeleteButton = {
-    display: blog.user.username === username ? '' : 'none',
+  const comments = foundBlog[0] !== undefined ? foundBlog[0].comments : []
+
+  var showDeleteButton
+  if (blog) {
+    showDeleteButton = {
+      display: blog.user.username === username ? '' : 'none',
+    }
   }
 
   const blogStyle = {
@@ -22,24 +29,17 @@ const Blog = ({ blog, addLike, removeBlog, username }) => {
     addLike({ id: blog.id })
   }
 
-  const toggleVisibility = () => {
-    setVisible(!visible)
-  }
-
   const handleDelete = async () => {
     removeBlog({ id: blog.id })
   }
 
-  return (
+  return blog ? (
     <div className="blog">
       <div style={blogStyle}>
         <div className="titleAndAuthor">
-          {blog.title} {blog.author}
-          <button style={hideWhenVisible} onClick={toggleVisibility}>
-            view
-          </button>
+          {blog.title} by {blog.author}
         </div>
-        <div style={showWhenVisible}>
+        <div style={{ display: true }}>
           <div>
             likes: {blog.likes}{' '}
             <button id="likeButton" onClick={handleAddLike}>
@@ -51,10 +51,24 @@ const Blog = ({ blog, addLike, removeBlog, username }) => {
           <button style={showDeleteButton} onClick={handleDelete}>
             remove
           </button>
-          <button onClick={toggleVisibility}>hide</button>
+          {/* <button onClick={toggleVisibility}>hide</button> */}
         </div>
       </div>
+      <h2>Comments</h2>
+      <CommentForm blogId={blog.id} />
+
+      {comments === null ? (
+        ''
+      ) : (
+        <ul>
+          {comments.map((comment) => (
+            <li key={comment.id}>{comment.message}</li>
+          ))}
+        </ul>
+      )}
     </div>
+  ) : (
+    <div>Blog does not exist</div>
   )
 }
 
