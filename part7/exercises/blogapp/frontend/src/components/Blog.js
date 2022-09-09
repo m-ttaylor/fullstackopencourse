@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { PropTypes } from 'prop-types'
 import CommentForm from './CommentForm'
 import { useSelector } from 'react-redux'
@@ -34,7 +33,7 @@ const Blog = ({ blog, addLike, removeBlog, username }) => {
   }
 
   return blog ? (
-    <div className="blog">
+    <div className="p-5">
       <div style={blogStyle}>
         <div className="titleAndAuthor">
           {blog.title} by {blog.author}
@@ -42,7 +41,11 @@ const Blog = ({ blog, addLike, removeBlog, username }) => {
         <div style={{ display: true }}>
           <div>
             likes: {blog.likes}{' '}
-            <button id="likeButton" onClick={handleAddLike}>
+            <button
+              className="border rounded-md bg-green-100 hover:bg-green-200 focus:ring-4 focus:outline-none focus:ring-green-300"
+              id="likeButton"
+              onClick={handleAddLike}
+            >
               like
             </button>
           </div>
@@ -54,7 +57,7 @@ const Blog = ({ blog, addLike, removeBlog, username }) => {
           {/* <button onClick={toggleVisibility}>hide</button> */}
         </div>
       </div>
-      <h2>Comments</h2>
+      <h2 className="text-xl">Comments</h2>
       <CommentForm blogId={blog.id} />
 
       {comments === null ? (

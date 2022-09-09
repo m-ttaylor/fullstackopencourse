@@ -22,42 +22,62 @@ const Menu = ({ user, handleLogout }) => {
   }
 
   return (
-    <div>
-      <Link style={padding} to="/main">
-        main
-      </Link>
-      <Link style={padding} to="/users">
-        users
-      </Link>
-      {user === null ? (
-        <Link style={padding} to="/login">
-          login
+    <div className="bg-slate-300 border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
+      <div className="flex flex-col p-4 mt-4 rounded-lg border border-gray-100 md:flex-row">
+        <Link
+          className="block py-2 pr-4 pl-3 text-gray-700 underline rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+          style={padding}
+          to="/main"
+        >
+          main
         </Link>
-      ) : (
-        <span style={padding}>
-          {user.name} logged in <button onClick={handleLogout}>logout</button>
-        </span>
-      )}
+        <Link
+          className="block py-2 pr-4 pl-3 text-gray-700 underline rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+          style={padding}
+          to="/users"
+        >
+          users
+        </Link>
+        {user === null ? (
+          <Link
+            className="block py-2 pr-4 pl-3 text-gray-700 underline rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+            style={padding}
+            to="/login"
+          >
+            login
+          </Link>
+        ) : (
+          <span style={padding}>
+            {user.name} logged in{' '}
+            <button className="underline" onClick={handleLogout}>
+              logout
+            </button>
+          </span>
+        )}
+      </div>
     </div>
   )
 }
 
 const UserPage = ({ user, blogs }) => {
+  const filteredBlogs = [...blogs].filter((b) => b.user === user.id)
   return user ? (
     <div>
-      <h2>{user.name}</h2>
-      <ul>
-        {blogs.map((blog) =>
-          blog.user.id === user.id ? <li key={blog.id}>{blog.title}</li> : null
-        )}
+      <h2 className="text-xxl">{user.name}</h2>
+      <ul className="border w-1/3">
+        {filteredBlogs.map((blog) => (
+          <li key={blog.id}>{blog.title}</li>
+        ))}
       </ul>
     </div>
-  ) : null
+  ) : (
+    <div>Test</div>
+  )
 }
 
 const Users = ({ users }) => {
   return (
-    <table>
+    <table className="border">
       <thead>
         <tr>
           <th>users</th>
@@ -68,7 +88,9 @@ const Users = ({ users }) => {
         {users.map((user) => (
           <tr key={user.id}>
             <td>
-              <Link to={`/users/${user.id}`}>{user.name}</Link>
+              <Link className="text-l" to={`/users/${user.id}`}>
+                {user.name}
+              </Link>
             </td>
             <td>{user.blogs.length}</td>
           </tr>
@@ -102,7 +124,7 @@ const App = () => {
       dispatch(updateUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
 
   const handleLogout = () => {
     console.log('logging out')

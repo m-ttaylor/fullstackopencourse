@@ -9,6 +9,7 @@ import notificationReducer from './reducers/notificationReducer'
 import userReducer from './reducers/userReducer'
 import usersReducer from './reducers/usersReducer'
 import { BrowserRouter as Router } from 'react-router-dom'
+import './index.css'
 
 const store = configureStore({
   reducer: {
