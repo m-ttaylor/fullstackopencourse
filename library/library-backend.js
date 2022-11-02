@@ -174,8 +174,13 @@ const resolvers = {
         const author = { name: args.author, id: uuid(), born: null, bookCount: 1 }
         authors = authors.concat(author)
       } else {
-        authors = authors.filter(a => a.name === args.author ? 
-          { name: a.name, born: a.born, bookCount: a.bookCount+1 } : a)
+        console.log('debug', exists)
+        console.log(`updating author ${args.author}`)
+        authors = authors.map(a => 
+          a.id === exists.id ? 
+          { ...a, bookCount: a.bookCount+1 } 
+          : a
+        )
       }
       return book
     },
