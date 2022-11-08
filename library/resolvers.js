@@ -10,11 +10,17 @@ const pubsub = new PubSub()
 const JWT_SECRET = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im10YXlsb3IiLCJpZCI6IjYzNjNmZDRiMzg3MWU2ZmU2OGU0OTdjYiIsImlhdCI6MTY2NzQ5NzQ3OH0.yHb2V_-M8b1F0xqUlZKvpoGa9l1_3wLy3NmlYHTvZu4'
 
 const resolvers = {
+  Author: {
+    bookCount: (root) => {
+      return root.bookCount
+    }
+  },
   Query: {
     // bookCount: (args) => books.filter(book => book.author === args.author).length
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allAuthors: async (root, args) => {
+      console.log('Author.find')
       return await Author.find({})
     },
     allBooks: async (root, args) => {
@@ -57,7 +63,9 @@ const resolvers = {
       var author = await Author.findOne({ name: args.author })
       if (!author) {
         console.log('Author does not exist yet, adding...')
-        author = new Author({name: args.author})
+        author = new Author({name: args.author, bookCount: 1})
+        // author.bookCount = 1
+        console.log(author)
         try {
           await author.save()
         } catch (error) {
@@ -67,6 +75,8 @@ const resolvers = {
         }
       } else {
         console.log('Author already exists', author.name)
+        author.bookCount += 1
+        await author.save()
       }
 
       const book = new Book(
