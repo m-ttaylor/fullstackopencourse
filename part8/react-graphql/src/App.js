@@ -1,9 +1,11 @@
-import { useQuery, useApolloClient } from '@apollo/client'
+import {
+  useQuery, useMutation, useSubscription, useApolloClient
+} from '@apollo/client'
 import Persons from './components/Persons'
 import PersonForm from './components/PersonForm'
 import LoginForm from './components/LoginForm'
 import PhoneForm from './components/PhoneForm'
-import { ALL_PERSONS } from './queries'
+import { ALL_PERSONS, PERSON_ADDED } from './queries'
 import { useState } from 'react'
 
 const Notify = ({errorMessage}) => {
@@ -17,11 +19,36 @@ const Notify = ({errorMessage}) => {
   )
 }
 
+export const updateCache = (cache, query, addedPerson) => {
+  // helper that is used to eliminate saving same person twice
+  const uniqByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.name
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({ allPersons }) => {
+    return {
+      allPersons: uniqByName(allPersons.concat(addedPerson)),
+    }
+  })
+}
+
 const App = () => {
-  const [token, setToken] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
   const result = useQuery(ALL_PERSONS)
-  const client = useApolloClient()
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [token, setToken] = useState(null)
+  const client = useApolloClient() 
+
+  useSubscription(PERSON_ADDED, {
+    onData: ({ subscriptionData, client }) => {
+      const addedPerson = subscriptionData.data.personAdded
+      notify(`${addedPerson.name} added`)
+      updateCache(client.cache, { query: ALL_PERSONS }, addedPerson)
+    },
+  })
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -33,6 +60,8 @@ const App = () => {
   if (result.loading)  {
     return <div>loading...</div>
   }
+
+  console.log('data', result)
 
   const logout = () => {
     setToken(null)
