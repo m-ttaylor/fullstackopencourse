@@ -19,23 +19,23 @@ const exerciseParseArguments = (args: Array<string>): ExerciseValues => {
 
   // console.log(args[2]);
   // console.log(args[3]);
-  let value1 : Array<number> = [];
+  const value1 : Array<number> = [];
   for (let i = 3; i < args.length; i++) {
     if (isNaN(Number(args[i]))) {
-      throw new Error('Provided values were not numbers')
+      throw new Error('Provided values were not numbers');
     } else {
-      value1.push(Number(args[i]))
+      value1.push(Number(args[i]));
     }
   }
   if (!isNaN(Number(args[2]))) {
     return {
       value1,
       value2: Number(args[2])
-    }
+    };
   } else {
     throw new Error('Provided values were not numbers!');
   }
-}
+};
 
 
 const calculateExercises = (days: Array<number>, target: number): Result => {
@@ -44,7 +44,7 @@ const calculateExercises = (days: Array<number>, target: number): Result => {
 
   const trainingDays = days.reduce((sum, value) => {
     return value > 0 ? sum + 1 : sum;
-  }, 0)
+  }, 0);
 
   const average = days.reduce((sum, value) => {
     return sum + value;
@@ -53,18 +53,18 @@ const calculateExercises = (days: Array<number>, target: number): Result => {
   let rating: number;
 
   let ratingDescription = '';
-  const diff = target - average
+  const diff = target - average;
   if (diff <= 0) {
     rating = 3;
-    ratingDescription = 'target met or exceeded'
+    ratingDescription = 'target met or exceeded';
   }
   else if (diff > 0 && diff < .5) {
     rating = 2;
-    ratingDescription = 'not too bad but could be better'
+    ratingDescription = 'not too bad but could be better';
   }
   else {
     rating = 1;
-    ratingDescription = 'pretty far off the mark'
+    ratingDescription = 'pretty far off the mark';
   }
 
   const success = diff <= 0; // We only succeed if we meet or exceed
@@ -81,7 +81,7 @@ const calculateExercises = (days: Array<number>, target: number): Result => {
   };
 
   return rtn;
-}
+};
 
 // console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
 
@@ -89,9 +89,9 @@ try {
   const { value1, value2 } = exerciseParseArguments(process.argv);
   console.log(calculateExercises(value1, value2));
 } catch (error: unknown) {
-  let errorMessage = 'Something bad happened.'
+  let errorMessage = 'Something bad happened.';
   if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message
+    errorMessage += ' Error: ' + error.message;
   }
-  console.log(errorMessage)
+  console.log(errorMessage);
 }
