@@ -29,4 +29,4 @@ try {
 
 console.log(process.argv);
 
-export { calculator };
+export { calculator, Operation };
