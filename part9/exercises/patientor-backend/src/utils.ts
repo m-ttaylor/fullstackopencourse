@@ -7,6 +7,7 @@ const toNewPatient = ({name, dateOfBirth, ssn, gender, occupation}: PatientReque
     ssn: parseSsn(ssn),
     gender: parseGender(gender),
     occupation: parseOccupation(occupation),
+    entries: []
   };
   return newPatient;
 };

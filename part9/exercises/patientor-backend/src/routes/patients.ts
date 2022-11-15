@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from 'express';
 import patientService from '../services/patientService';
+import { PatientRequest } from '../types';
 import toNewPatient from '../utils';
 
 const router = express.Router();
@@ -9,9 +10,13 @@ router.get('/', (_req, res) => {
   res.send(patientService.getSanitizedPatients());
 });
 
+router.get('/:id', (req, res) => {
+  res.send(patientService.findPatientById(req.params.id));
+});
+
 router.post('/', (req, res) => {
   try { 
-    const newPatient = toNewPatient(req.body);
+    const newPatient = toNewPatient(req.body as PatientRequest);
     const addedPatient = patientService.addPatient(newPatient);
     res.json(addedPatient);
   } catch (error: unknown) {

@@ -9,14 +9,21 @@ const getPatients = (): Patient[] => {
 };
 
 const getSanitizedPatients = (): SanitizedPatient[] => {
-  return patients.map(({id, name, dateOfBirth, gender, occupation}) => ({
+  return patients.map(({id, name, dateOfBirth, gender, occupation, entries}) => ({
     id,
     name,
     dateOfBirth,
     gender,
-    occupation
+    occupation,
+    entries
   }));
 };
+
+const findPatientById = (id: string): Patient | undefined  => {
+  const patient = patients.find(p => p.id === id);
+  return patient;
+};
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const addPatient = (patient: NewPatient): Patient => {
@@ -32,5 +39,6 @@ const addPatient = (patient: NewPatient): Patient => {
 export default {
   getPatients,
   getSanitizedPatients,
-  addPatient
+  addPatient,
+  findPatientById
 };
