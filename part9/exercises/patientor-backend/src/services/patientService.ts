@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import patients from '../../data/patients';
-import { NewPatient, Patient, SanitizedPatient } from '../types';
+import { NewPatient, Patient, PublicPatient } from '../types';
 
 import { v1 as uuid } from 'uuid';
 
@@ -8,14 +8,13 @@ const getPatients = (): Patient[] => {
   return patients;
 };
 
-const getSanitizedPatients = (): SanitizedPatient[] => {
-  return patients.map(({id, name, dateOfBirth, gender, occupation, entries}) => ({
+const getSanitizedPatients = (): PublicPatient[] => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
     dateOfBirth,
     gender,
     occupation,
-    entries
   }));
 };
 
