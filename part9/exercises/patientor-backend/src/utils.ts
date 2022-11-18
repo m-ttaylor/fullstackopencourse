@@ -1,6 +1,6 @@
-import { NewPatient, Gender, PatientRequest } from "./types";
+import { NewPatient, Gender, PatientRequest, Diagnosis, HealthCheckRating, NewEntry, EntryRequest, NewHealthcheckEntry, NewHospitalEntry, NewOccupationalHealthcareEntry } from "./types";
 
-const toNewPatient = ({name, dateOfBirth, ssn, gender, occupation}: PatientRequest): NewPatient => {
+export const toNewPatient = ({name, dateOfBirth, ssn, gender, occupation}: PatientRequest): NewPatient => {
   const newPatient: NewPatient = {
     name: parseName(name),
     dateOfBirth: parseDate(dateOfBirth),
@@ -11,6 +11,60 @@ const toNewPatient = ({name, dateOfBirth, ssn, gender, occupation}: PatientReque
   };
   return newPatient;
 };
+
+const assertNever = (value: never): never => {
+  throw new Error(`Unhandled discriminated union member: ${JSON.stringify(value)}`);
+};
+
+export const toNewEntry = (
+  {date, type, 
+  specialist, description, 
+  diagnosisCodes, healthCheckRating, discharge, 
+  employerName, sickLeave}: EntryRequest): NewEntry => {
+    
+    const coercedType = parseType(type);
+    switch (coercedType) {
+      case "HealthCheck":
+        const newHealthCheckEntry: NewHealthcheckEntry = {
+          description: parseDescription(description),
+          date: parseDate(date),
+          specialist: parseSpecialist(specialist),
+          diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
+          type: coercedType,
+          healthCheckRating: parseHealthCheckRating(healthCheckRating)
+        };
+        return newHealthCheckEntry;
+      case "Hospital":
+        if (discharge === undefined) {
+          throw new Error('Missing required field discharge on entry type '+ type);
+        }
+        const newHospitalEntry: NewHospitalEntry = {
+          description: parseDescription(description),
+          date: parseDate(date),
+          specialist: parseSpecialist(specialist),
+          diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
+          type: coercedType,
+          discharge: parseDischarge(discharge)
+        };
+        return newHospitalEntry;
+      case "OccupationalHealthcare":
+        if (sickLeave === undefined) {
+          throw new Error('Missing required field sickLeave on entry type '+ type);
+        }
+        const newOccupationalHealthcareEntry: NewOccupationalHealthcareEntry = {
+          description: parseDescription(description),
+          date: parseDate(date),
+          specialist: parseSpecialist(specialist),
+          diagnosisCodes: parseDiagnosisCodes(diagnosisCodes),
+          type: coercedType,
+          employerName: parseEmployerName(employerName),
+          sickLeave: parseSickLeave(sickLeave)
+        };
+        return newOccupationalHealthcareEntry;
+      default:
+        return assertNever(coercedType);
+    }
+  };
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -25,11 +79,6 @@ const parseStringField = (toParse: unknown, expectedField: string): string => {
 };
 
 const parseName = (name: unknown): string => {
-  // if (!name || !isString(name)) {
-  //   throw new Error('Incorrect or missing name');
-  // }
-
-  // return name;
   return parseStringField(name, 'name');
 };
 
@@ -65,4 +114,84 @@ const parseOccupation = (occupation: unknown): string => {
   return parseStringField(occupation, 'occupation');
 };
 
-export default toNewPatient;
+const parseSpecialist = (specialist: unknown): string => {
+  return parseStringField(specialist, 'specialist');
+};
+
+type EntryType = "OccupationalHealthcare" | "Hospital" | "HealthCheck";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEntryType = (param: any): param is EntryType => {
+  return Boolean(param as EntryType);
+};
+
+const parseType = (type: unknown): EntryType => {
+  
+  if (!type || !isEntryType(type)) {
+    throw new Error('Incorrect or missing entry type ' + type);
+  }
+
+  return type;
+};
+
+const areDiagnosisCodes = (codes: unknown): codes is Array<Diagnosis['code']> => {
+  return codes instanceof Array<Diagnosis['code']>;
+};
+
+const parseDiagnosisCodes = (codes: unknown): Array<Diagnosis['code']> => {
+  if (!codes || codes === undefined || !areDiagnosisCodes(codes)) {
+    throw new Error('Incorrect or missing diagnosis codes');
+  }
+
+  return codes;
+};
+
+const parseDescription = (description: unknown): string => {
+  return parseStringField(description, 'description');
+};
+
+const parseEmployerName = (employerName: unknown): string  => {
+  return parseStringField(employerName, 'employerName');
+};
+
+const parseDischarge = (discharge: {date: unknown, criteria: unknown}): {date: string, criteria: string} => {
+
+  const { date, criteria } = discharge;
+  if (discharge !== undefined && discharge && typeof discharge === 'object') {
+    discharge['date'];
+  }
+  if (!discharge || !discharge?.date || !criteria || !isString(date) || !isString(criteria)) {
+    throw new Error('Incorrect or missing date/criteria field on discharge');
+  }
+
+  return {
+    date: parseDate(date),
+    criteria: parseStringField(criteria, 'criteria')
+  };
+};
+
+const isHealthCheckRating = (healthCheckRating: unknown): healthCheckRating is HealthCheckRating => {
+  return Boolean(healthCheckRating as HealthCheckRating);
+};
+
+const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
+  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+    throw new Error('Invalid healthCheckRating');
+  }
+
+  return healthCheckRating;
+};
+
+const parseSickLeave = (
+  sickLeave: {startDate: unknown, endDate: unknown}): {startDate: string, endDate: string} => {
+  
+  const { startDate, endDate } = sickLeave;
+  if (!startDate || !endDate || !isString(startDate) || !isString(endDate)) {
+    throw new Error('Incorrect or missing startDate/endDate field on sickLeave');
+  }
+
+  return {
+    startDate: parseDate(startDate),
+    endDate: parseDate(endDate),
+  };
+};

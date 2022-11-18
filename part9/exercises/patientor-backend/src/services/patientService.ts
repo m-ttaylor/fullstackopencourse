@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import patients from '../../data/patients';
-import { NewPatient, Patient, PublicPatient } from '../types';
+import { Entry, NewPatient, Patient, PublicPatient } from '../types';
 
 import { v1 as uuid } from 'uuid';
 
@@ -35,9 +35,26 @@ const addPatient = (patient: NewPatient): Patient => {
   return newPatient;
 };
 
+const addEntryToPatient = (patientId: string, entry: Omit<Entry, 'id'>): Entry => {
+  const patient = patients.find(p => p.id === patientId);
+  if (patient === undefined) {
+    throw new Error("Patient not found");
+  }
+  const id = uuid();
+  const newEntry = {
+    id,
+    ...entry
+  } as Entry;
+
+  patient.entries.push(newEntry);
+  // patients = patients.map(p => p.id === patientId ? patient)
+  return newEntry;
+};
+
 export default {
   getPatients,
   getSanitizedPatients,
   addPatient,
-  findPatientById
+  findPatientById,
+  addEntryToPatient
 };

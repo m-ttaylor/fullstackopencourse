@@ -28,6 +28,24 @@ export type PatientRequest = {
   occupation: unknown
 };
 
+export interface EntryRequest {
+  date: unknown;
+  type: unknown;
+  specialist: unknown
+  description: unknown;
+  diagnosisCodes?: unknown;
+  healthCheckRating: unknown;
+  discharge?: {
+    date: unknown;
+    criteria: unknown;
+  };
+  employerName?: unknown;
+  sickLeave?: {
+    startDate: unknown;
+    endDate: unknown;
+  };
+}
+
 interface BaseEntry {
   id: string;
   description: string;
@@ -70,6 +88,11 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
+
+export type NewHealthcheckEntry = Omit<HealthCheckEntry, 'id'>;
+export type NewHospitalEntry = Omit<HospitalEntry, 'id'>;
+export type NewOccupationalHealthcareEntry = Omit<OccupationalHealthcareEntry, 'id'>;
+export type NewEntry = Omit<OccupationalHealthcareEntry, 'id'> | Omit<HospitalEntry, 'id'> | Omit<HealthCheckEntry, 'id'>;
 export type NewPatient = Omit<Patient, 'id'>;
 export type SanitizedPatient = Omit<Patient, 'ssn'>;
 export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
