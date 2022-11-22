@@ -48,9 +48,9 @@ export const toNewEntry = (
         };
         return newHospitalEntry;
       case "OccupationalHealthcare":
-        if (sickLeave === undefined) {
-          throw new Error('Missing required field sickLeave on entry type '+ type);
-        }
+        // if (sickLeave === undefined) {
+        //   throw new Error('Missing required field sickLeave on entry type '+ type);
+        // }
         const newOccupationalHealthcareEntry: NewOccupationalHealthcareEntry = {
           description: parseDescription(description),
           date: parseDate(date),
@@ -200,13 +200,17 @@ const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
 };
 
 const parseSickLeave = (
-  sickLeave: {startDate: unknown, endDate: unknown}): {startDate: string, endDate: string} => {
+  sickLeave: {startDate: unknown, endDate: unknown} | undefined): undefined | {startDate: string, endDate: string} => {
   
+  if (!sickLeave) {
+    return undefined;
+  }
+
   const { startDate, endDate } = sickLeave;
   if (!startDate || !endDate || !isString(startDate) || !isString(endDate)) {
     throw new Error('Incorrect or missing startDate/endDate field on sickLeave');
   }
-
+  
   return {
     startDate: parseDate(startDate),
     endDate: parseDate(endDate),
