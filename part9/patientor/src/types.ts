@@ -65,6 +65,24 @@ export type NewHealthcheckEntry = Omit<HealthCheckEntry, 'id'>;
 export type NewHospitalEntry = Omit<HospitalEntry, 'id'>;
 export type NewOccupationalHealthcareEntry = Omit<OccupationalHealthcareEntry, 'id'>;
 
+export interface NewEntryFormValues {
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<Diagnosis['code']>;
+  type: "OccupationalHealthcare" | "Hospital" | "HealthCheck";
+  employerName?: string;
+  sickLeave?: {
+    startDate: string;
+    endDate: string;
+  };
+  discharge?: {
+    date: string;
+    criteria: string;
+  };
+  healthCheckRating?: HealthCheckRating;
+}
+
 export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
