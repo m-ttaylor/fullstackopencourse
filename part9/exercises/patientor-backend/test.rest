@@ -98,6 +98,21 @@ Content-Type: application/json
 
 {
   "date": "2016-01-01",
+  "type": "HealthCheck",
+  "specialist": "MD House",
+  "diagnosisCodes": [
+    "S03.5"
+  ],
+  "healthCheckRating": "Healthy",
+  "description": "Really not messed up"
+}
+
+###
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "date": "2016-01-01",
   "type": "Hospital",
   "specialist": "MD House",
   "diagnosisCodes": [

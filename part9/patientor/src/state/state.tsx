@@ -1,17 +1,17 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { Diagnosis, Patient } from "../types";
+import { Diagnosis, Gender, Patient } from "../types";
 
 import { Action } from "./reducer";
 
 export type State = {
   patients: { [id: string]: Patient },
-  currentPatient: Patient | undefined,
+  currentPatient: Patient,
   diagnoses: Diagnosis[]
 };
 
 const initialState: State = {
   patients: {},
-  currentPatient: undefined,
+  currentPatient: {id: "", name: "", ssn: "", gender: Gender.Other, occupation: "", dateOfBirth: "", entries: []},
   diagnoses: []
 };
 

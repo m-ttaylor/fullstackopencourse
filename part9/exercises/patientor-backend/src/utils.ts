@@ -170,16 +170,33 @@ const parseDischarge = (discharge: {date: unknown, criteria: unknown}): {date: s
   };
 };
 
-const isHealthCheckRating = (healthCheckRating: unknown): healthCheckRating is HealthCheckRating => {
-  return Boolean(healthCheckRating as HealthCheckRating);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isHealthCheckRating = (healthCheckRating: any): healthCheckRating is HealthCheckRating => {
+  return Boolean(healthCheckRating === HealthCheckRating.Healthy || healthCheckRating as HealthCheckRating);
 };
 
-const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
-    throw new Error('Invalid healthCheckRating');
+const parseHealthCheckRating = (rating: unknown): HealthCheckRating => {
+  // need to compare to zero to guard against falsy-ness of zero :(
+  if ((rating !== 0 && !rating) || !isHealthCheckRating(rating)) {
+    throw new Error(`Invalid healthCheckRating: ${rating}`);
   }
+  console.log('passed type guard');
+  console.log(rating);
 
-  return healthCheckRating;
+  // for some reason without using a switch, javascript will stubbornly pass along a string
+  // representation of the rating instead of the numerical enum value
+  switch (Number(rating)) {
+    case 0:
+      return HealthCheckRating.Healthy;
+    case 1:
+      return HealthCheckRating.LowRisk;
+    case 2:
+      return HealthCheckRating.HighRisk;
+    case 3:
+      return HealthCheckRating.CriticalRisk;
+    default:
+      throw new Error('Invalid healthCheckRating: ' + rating);
+  }
 };
 
 const parseSickLeave = (
